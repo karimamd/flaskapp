@@ -12,29 +12,15 @@
          {{ message }}
       {%- endfor %}
 		
-      <h3>Students (<a href = "{{ url_for('new') }}">Add Student
+      <h3>Notes (<a href = "{{ url_for('new') }}">Add Note
          </a>)</h3>
-      
-      <table>
-         <thead>
-            <tr>
-               <th>Name</th>
-               <th>City</th>
-               <th>Address</th>
-               <th>Pin</th>
-            </tr>
-         </thead>
 
-         <tbody>
-            {% for student in students %}
-               <tr>
-                  <td>{{ student.name }}</td>
-                  <td>{{ student.city }}</td>
-                  <td>{{ student.addr }}</td>
-                  <td>{{ student.pin }}</td>
-               </tr>
+            {% for note in notes %}
+      
+            <h2>{{ note.title }}</h2>
+            <p>{{ note.body }}</p>
+               
             {% endfor %}
-         </tbody>
-      </table>
+
    </body>
 </html>
