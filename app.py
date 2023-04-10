@@ -1,32 +1,19 @@
 from flask import Flask, request, flash, url_for, redirect, render_template
-from flask_sqlalchemy import SQLAlchemy
 import psycopg2
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///notes.sqlite3'
-app.config['SECRET_KEY'] = "Kareem"
-
-db = SQLAlchemy(app)
+app.config['SECRET_KEY'] = "karimamd95"
 
 def get_db_connection():
    conn = psycopg2.connect(host="note-app.ckkvlyf56ji2.eu-north-1.rds.amazonaws.com", database="postgres", user="karimamd95", password="karimamd95")
    return conn
-
-class notes(db.Model):
-      id = db.Column('note_id', db.Integer, primary_key = True)
-      title = db.Column(db.String(100))
-      body = db.Column(db.String(5000)) 
-      
-def __init__(self, title, body):
-   self.title = title
-   self.body = body
 
 @app.route('/')
 def show_all():
    # db.create_all()
    conn = get_db_connection()
    cur = conn.cursor()
-   cur.execute('SELECT * FROM notes;')
+   cur.execute('SELECT * FROM note_items;')
    all_notes = cur.fetchall()
    cur.close()
    conn.close()
@@ -38,9 +25,15 @@ def new():
       if not request.form['title'] or not request.form['body']:
          flash('Please enter all the fields', 'error')
       else:
-         note = notes(title=request.form['title'], body=request.form['body'])
-         db.session.add(note)
-         db.session.commit()
+         note_title=request.form['title']
+         note_body=request.form['body']
+         print('printing')
+         print(note_title, note_body)
+         conn = get_db_connection()
+         cur = conn.cursor()
+         cur.execute("insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body))
+         cur.close()
+         conn.close()
          flash('Record was successfully added')
          return redirect(url_for('show_all'))
    return render_template('new.html')
