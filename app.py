@@ -14,10 +14,14 @@ def show_all():
    conn = get_db_connection()
    cur = conn.cursor()
    cur.execute('SELECT * FROM note_items;')
-   all_notes = cur.fetchall()
+   all_notes = cur.fetchall() # list of tuples
+   print(all_notes)
+   all_notes_reversed=all_notes.copy()
+   all_notes_reversed.reverse()
+   print(all_notes_reversed)
    cur.close()
    conn.close()
-   return render_template('show_all.html', notes = all_notes )
+   return render_template('show_all.html', notes = all_notes_reversed )
 
 @app.route('/new', methods = ['GET', 'POST'])
 def new():
