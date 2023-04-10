@@ -1,11 +1,16 @@
 from flask import Flask, request, flash, url_for, redirect, render_template
 from flask_sqlalchemy import SQLAlchemy
+import psycopg2
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///notes.sqlite3'
 app.config['SECRET_KEY'] = "Kareem"
 
 db = SQLAlchemy(app)
+
+def get_db_connection():
+   conn = psycopg2.connect(host="note-app.ckkvlyf56ji2.eu-north-1.rds.amazonaws.com", database="postgres", user="karimamd95", password="karimamd95")
+   return conn
 
 class notes(db.Model):
       id = db.Column('note_id', db.Integer, primary_key = True)
@@ -18,8 +23,14 @@ def __init__(self, title, body):
 
 @app.route('/')
 def show_all():
-   db.create_all()
-   return render_template('show_all.html', notes = notes.query.all() )
+   # db.create_all()
+   conn = get_db_connection()
+   cur = conn.cursor()
+   cur.execute('SELECT * FROM notes;')
+   all_notes = cur.fetchall()
+   cur.close()
+   conn.close()
+   return render_template('show_all.html', notes = all_notes )
 
 @app.route('/new', methods = ['GET', 'POST'])
 def new():
