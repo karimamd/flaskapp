@@ -14,10 +14,30 @@ def show_all():
    conn = get_db_connection()
    cur = conn.cursor()
    cur.execute('SELECT * FROM note_items;')
-   all_notes = cur.fetchall()
+   all_notes = cur.fetchall() # list of tuples
+   print(all_notes)
+   all_notes_reversed=all_notes.copy()
+   all_notes_reversed.reverse()
+   print(all_notes_reversed)
    cur.close()
    conn.close()
-   return render_template('show_all.html', notes = all_notes )
+   return render_template('show_all.html', notes = all_notes_reversed )
+
+
+@app.route('/queue')
+def queue():
+   # db.create_all()
+   conn = get_db_connection()
+   cur = conn.cursor()
+   cur.execute('SELECT * FROM note_items;')
+   all_notes = cur.fetchall() # list of tuples
+   print(all_notes)
+   all_notes_reversed=all_notes.copy()
+   all_notes_reversed.reverse()
+   print(all_notes_reversed)
+   cur.close()
+   conn.close()
+   return render_template('queue.html', notes = all_notes_reversed )
 
 @app.route('/new', methods = ['GET', 'POST'])
 def new():
@@ -39,5 +59,4 @@ def new():
    return render_template('new.html')
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(debug = True)
+    app.run(host='0.0.0.0', port=5000)
