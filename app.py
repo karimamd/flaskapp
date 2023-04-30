@@ -1,17 +1,10 @@
-from flask import Flask, request, flash, url_for, redirect, render_template, jsonify
-from jinja2 import Environment, PackageLoader, select_autoescape
+from flask import Flask, request, flash, url_for, redirect, render_template
 import psycopg2
 import unicodedata
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "karimamd95"
 
-# Add the `jsonify` function to the Jinja2 template environment
-# env = Environment(
-#     loader=PackageLoader('app', 'templates'),
-#     autoescape=select_autoescape(['html', 'xml'])
-# )
-# env.globals['jsonify'] = jsonify
 
 def remove_control_characters(s):
     return "".join(ch for ch in s if unicodedata.category(ch)[0]!="C")
@@ -38,7 +31,6 @@ def show_all():
 
 @app.route('/queue')
 def queue():
-   # db.create_all()
    conn = get_db_connection()
    cur = conn.cursor()
    cur.execute('SELECT * FROM note_items limit 10;')
