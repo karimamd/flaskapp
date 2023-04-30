@@ -33,7 +33,7 @@ def show_all():
 def queue():
    conn = get_db_connection()
    cur = conn.cursor()
-   cur.execute('SELECT * FROM note_items limit 10;')
+   cur.execute('SELECT * FROM note_items order by note_id asc limit 10;')
    all_notes = cur.fetchall() # list of tuples
    
    my_array = all_notes
