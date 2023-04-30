@@ -3,6 +3,8 @@
 <head>
 	<title>Note Taking App</title>
 </head>
+
+	
 <body>
 	<h3>
 		<a href = "{{ url_for('show_all') }}">All notes</a>
@@ -27,55 +29,51 @@
 		<button id="next-note">Next Note &rarr;</button>
 	</div>
 
-	<script>
-		// Define an array of notes
-		var notes = [
-			{
-				title: "Note 1",
-				body: "This is the first note"
-			},
-			{
-				title: "Note 2",
-				body: "This is the second note"
-			},
-			{
-				title: "Note 3",
-				body: "This is the third note"
-			}
-		];
 
-		// Initialize the current note index to 0
-		var currentNoteIndex = 0;
-
-		// Function to display the current note
-		function displayNote() {
-			var note = notes[currentNoteIndex];
-			document.getElementById("note-title").innerHTML = note.title;
-			document.getElementById("note-body").innerHTML = note.body;
-		}
-
-		// Function to navigate to the previous note
-		function previousNote() {
-			if (currentNoteIndex > 0) {
-				currentNoteIndex--;
-				displayNote();
-			}
-		}
-
-		// Function to navigate to the next note
-		function nextNote() {
-			if (currentNoteIndex < notes.length - 1) {
-				currentNoteIndex++;
-				displayNote();
-			}
-		}
-
-		// Add click event listeners to the arrow buttons
-		document.getElementById("previous-note").addEventListener("click", previousNote);
-		document.getElementById("next-note").addEventListener("click", nextNote);
-
-		// Display the initial note
-		displayNote();
-	</script>
 </body>
+<script>
+
+	// Initialize the current note index to 0
+	var currentNoteIndex = 0;
+	var notes = JSON.parse('{{ my_array|tojson|safe }}');
+	console.log(notes)
+
+	// Function to display the current note
+	function displayNote() {
+		var note = notes[currentNoteIndex];
+		document.getElementById("note-title").innerHTML = note.title;
+		document.getElementById("note-body").innerHTML = note.body;
+	}
+
+	// Function to navigate to the previous note
+	function previousNote() {
+		if (currentNoteIndex > 0) {
+			currentNoteIndex--;
+			displayNote();
+		}
+		else {
+			currentNoteIndex = notes.length -1;
+			displayNote();
+		}
+	}
+
+	// Function to navigate to the next note
+	function nextNote() {
+		if (currentNoteIndex < notes.length -1) {
+			currentNoteIndex++;
+			displayNote();
+		}
+		else {
+			currentNoteIndex = 0;
+			displayNote();
+		}
+	}
+
+	// Add click event listeners to the arrow buttons
+	document.getElementById("previous-note").addEventListener("click", previousNote);
+	document.getElementById("next-note").addEventListener("click", nextNote);
+
+	// Display the initial note
+	displayNote();
+</script>
 </html>
