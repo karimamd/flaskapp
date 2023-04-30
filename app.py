@@ -35,6 +35,7 @@ def queue():
    cur = conn.cursor()
    cur.execute('SELECT * FROM note_items order by note_id asc limit 10;')
    all_notes = cur.fetchall() # list of tuples
+   # all_notes=[(1,'t1','b1'), (2,'t2','b2')]
    
    my_array = all_notes
 

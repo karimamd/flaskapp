@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+   <head>
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
    <body>
       <h3>
          <a href = "{{ url_for('show_all') }}">All notes</a>
@@ -23,10 +26,10 @@
       
       <form action = "{{ request.path }}" method = "post">
          <label for = "title">Title</label><br>
-         <input style="width:350px;" type = "text" name = "title" placeholder = "title" /><br>
+         <input type = "text" name = "title" placeholder = "title" /><br>
 
          <label for = "body">body</label><br>
-         <textarea style="width:350px;height:250px;"  name = "body" placeholder = "body"></textarea><br>
+         <textarea name = "body" placeholder = "body"></textarea><br>
          <input type = "submit" value = "Submit" />
       </form>
    </body>
