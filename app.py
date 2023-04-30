@@ -13,7 +13,7 @@ def get_db_connection():
    conn = psycopg2.connect(host="note-app.ckkvlyf56ji2.eu-north-1.rds.amazonaws.com", database="postgres", user="karimamd95", password="karimamd95")
    return conn
 
-@app.route('/')
+@app.route('/all')
 def show_all():
    # db.create_all()
    conn = get_db_connection()
@@ -29,7 +29,7 @@ def show_all():
    return render_template('show_all.html', notes = all_notes_reversed )
 
 
-@app.route('/queue')
+@app.route('/')
 def queue():
    conn = get_db_connection()
    cur = conn.cursor()
