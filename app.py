@@ -13,9 +13,8 @@ def get_db_connection():
    conn = psycopg2.connect(host="note-app.ckkvlyf56ji2.eu-north-1.rds.amazonaws.com", database="postgres", user="karimamd95", password="karimamd95")
    return conn
 
-@app.route('/')
+@app.route('/showall')
 def show_all():
-   # db.create_all()
    conn = get_db_connection()
    cur = conn.cursor()
    cur.execute('SELECT * FROM note_items;')
@@ -29,21 +28,21 @@ def show_all():
    return render_template('show_all.html', notes = all_notes_reversed )
 
 
-@app.route('/queue')
+@app.route('/')
 def queue():
    conn = get_db_connection()
    cur = conn.cursor()
-   cur.execute('SELECT * FROM note_items limit 10;')
+   cur.execute('SELECT * FROM note_items order by note_id desc limit 10;')
    all_notes = cur.fetchall() # list of tuples
    
    my_array = all_notes
 
    my_list = []
    for item in my_array:
-      my_dict = {'title': remove_control_characters(str(item[1])), 'body': remove_control_characters(str(item[2]))}
+      my_dict = {"title":  remove_control_characters("" +str(item[1])+ "") , "body":  remove_control_characters("" +str(item[2])+ "")}
       my_list.append(my_dict)
 
-   #print(my_list)
+   print(my_list[0:2])
    
    cur.close()
    conn.close()
