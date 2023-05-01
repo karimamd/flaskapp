@@ -20,10 +20,8 @@ def show_all():
    cur = conn.cursor()
    cur.execute('SELECT * FROM note_items;')
    all_notes = cur.fetchall() # list of tuples
-   # print(all_notes)
    all_notes_reversed=all_notes.copy()
    all_notes_reversed.reverse()
-   # print(all_notes_reversed)
    cur.close()
    conn.close()
    return render_template('show_all.html', notes = all_notes_reversed )
@@ -38,14 +36,6 @@ def queue():
    # all_notes=[(1,'t1','b1'), (2,'t2','b2')]
    
    note_one = all_notes[0]
-   print(note_one)
-
-   # my_list = []
-   # for item in my_array:
-   #    my_dict = {'title': remove_control_characters(str(item[1])), 'body': remove_control_characters(str(item[2]))}
-   #    my_list.append(my_dict)
-
-   #print(my_list)
    
    cur.close()
    conn.close()
@@ -59,8 +49,6 @@ def new():
       else:
          note_title=request.form['title']
          note_body=request.form['body']
-         # print('printing')
-         # print(note_title, note_body)
          conn = get_db_connection()
          cur = conn.cursor()
          cur.execute("insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body))
@@ -106,8 +94,7 @@ def get_previous_note():
    if not all_notes:
       query= "SELECT note_id, title, body FROM note_items order by note_id desc limit 1;"
       cur.execute(query)
-      all_notes = cur.fetchall()    
-   print(all_notes)
+      all_notes = cur.fetchall()
    next_note = all_notes[0]
 
    # Return the next note as JSON
