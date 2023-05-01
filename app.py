@@ -63,14 +63,23 @@ def new():
 def get_next_note():
     # Get the next note from the database
    current_note_id = request.args.get('id')
+   print(current_note_id)
    conn = get_db_connection()
    cur = conn.cursor()
-   query= "SELECT note_id, title, body FROM note_items where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
-   cur.execute(query)
+   update_query="update note_items set last_read_at = current_timestamp where note_id = "+str(current_note_id)
+   try:
+      cur2 = conn.cursor()
+      cur2.execute(update_query)
+      conn.commit()
+      print('executed')
+   except:
+      print ("I cant execute the update query for some reason")
+   get_note_query= "SELECT note_id, title, body FROM note_items where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
+   cur.execute(get_note_query)
    all_notes = cur.fetchall()
    if not all_notes:
-      query= "SELECT note_id, title, body FROM note_items order by note_id asc limit 1;"
-      cur.execute(query)
+      get_note_query= "SELECT note_id, title, body FROM note_items order by note_id asc limit 1;"
+      cur.execute(get_note_query)
       all_notes = cur.fetchall()  
    next_note = all_notes[0]
 
@@ -87,13 +96,21 @@ def get_previous_note():
    current_note_id = request.args.get('id')
    conn = get_db_connection()
    cur = conn.cursor()
-   query= "SELECT note_id, title, body FROM note_items where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
-   cur.execute(query)
+   update_query="update note_items set last_read_at = current_timestamp where note_id = "+str(current_note_id)
+   try:
+      cur2 = conn.cursor()
+      cur2.execute(update_query)
+      conn.commit()
+      print('executed')
+   except:
+      print ("I cant execute the update query for some reason")
+   get_note_query= "SELECT note_id, title, body FROM note_items where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
+   cur.execute(get_note_query)
    all_notes = cur.fetchall()
    # if no note before it then get the last note in the database (end of queue)
    if not all_notes:
-      query= "SELECT note_id, title, body FROM note_items order by note_id desc limit 1;"
-      cur.execute(query)
+      get_note_query= "SELECT note_id, title, body FROM note_items order by note_id desc limit 1;"
+      cur.execute(get_note_query)
       all_notes = cur.fetchall()
    next_note = all_notes[0]
 
@@ -109,7 +126,7 @@ def get_current_note():
     # Get the next note from the database
    conn = get_db_connection()
    cur = conn.cursor()
-   query= "SELECT note_id, title, body FROM note_items where note_id=(select min(note_id) from note_items);"
+   query= "SELECT note_id, title, body FROM note_items where last_read_at  = (select max(last_read_at) from note_items ni);"
    cur.execute(query)
    all_notes = cur.fetchall()
    print(all_notes)
