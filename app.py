@@ -18,7 +18,7 @@ def show_all():
    # db.create_all()
    conn = get_db_connection()
    cur = conn.cursor()
-   cur.execute('SELECT * FROM note_items;')
+   cur.execute('SELECT * FROM note_items order by note_id;')
    all_notes = cur.fetchall() # list of tuples
    all_notes_reversed=all_notes.copy()
    all_notes_reversed.reverse()
@@ -63,7 +63,7 @@ def new():
 def get_next_note():
     # Get the next note from the database
    current_note_id = request.args.get('id')
-   print(current_note_id)
+   # print(current_note_id)
    conn = get_db_connection()
    cur = conn.cursor()
    update_query="update note_items set last_read_at = current_timestamp where note_id = "+str(current_note_id)
@@ -129,7 +129,7 @@ def get_current_note():
    query= "SELECT note_id, title, body FROM note_items where last_read_at  = (select max(last_read_at) from note_items ni);"
    cur.execute(query)
    all_notes = cur.fetchall()
-   print(all_notes)
+   # print(all_notes)
    next_note = all_notes[0]
 
    # Return the next note as JSON
