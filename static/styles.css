@@ -1,0 +1,28 @@
+/* Default styles */
+input, textarea {
+  resize: none;
+}
+
+/* Small screen sizes */
+@media only screen and (max-width: 600px) {
+  input, textarea {
+    resize: vertical; /* Allow vertical resizing */
+    width: 75%; /* Full width */
+  }
+}
+
+/* Medium and large screen sizes */
+@media only screen and (min-width: 600px) {
+  input, textarea {
+    resize: horizontal; /* Allow horizontal resizing */
+    width: 75%; /* Half width */
+  }
+  /* Set the height of the text box to 50% of the viewport height */
+  textarea {
+    height: 45vh;
+  }
+  input {
+    height: 5vh;
+  }
+
+}

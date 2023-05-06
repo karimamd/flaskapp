@@ -2,78 +2,120 @@
 <html>
 <head>
 	<title>Note Taking App</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 	
 <body>
 	<h3>
-		<a href = "{{ url_for('show_all') }}">All notes</a>
-	 </h3>
-	 <h3>
-		<a href = "{{ url_for('new') }}">Add Note</a>
-	 </h3>
-	 <h3>
-		<a href = "{{ url_for('queue') }}">Notes queue</a>
+		<a href = "{{ url_for('show_all') }}" style="font-size: 4vw;">All notes</a>
+		<a href = "{{ url_for('new') }}" style="font-size: 4vw;">Add Note</a>
+		<a href = "{{ url_for('queue') }}" style="font-size: 4vw;">Notes queue</a>
 	 </h3>
 		
 	 <hr/>
-	<h1>Note Taking App</h1>
 
 	<div id="note">
-		<h2 id="note-title">Note Title</h2>
-		<p id="note-body">Note Body</p>
+		<div id="navigation">
+			<button style="font-size: 2vw;" id="previous-note">&larr; Previous Note</button>
+			<button style="font-size: 2vw;" id="next-note">Next Note &rarr;</button>
+		</div>
+		<h2 style="font-size: 4vw;" id="note-title">Note Title</h2>
+		<div style="font-size: 4vw;white-space: pre-wrap;" id="note-body">Note Body</div>
+
+		<button style="font-size: 2vw;" id="delete-note">DELETE &rarr;</button>
 	</div>
 
-	<div id="navigation">
-		<button id="previous-note">&larr; Previous Note</button>
-		<button id="next-note">Next Note &rarr;</button>
-	</div>
 
 
 </body>
+
 <script>
 
-	// Initialize the current note index to 0
-	var currentNoteIndex = 0;
-	var notes = JSON.parse('{{ my_array|tojson|safe }}');
-	console.log(notes)
+	var currentNoteId = 25; // dummy value for the global variable
+
+	// Send a request to the server to get the first note (to be changed to last read note)
+	fetch("/get_current_note")
+	.then(response => response.json())
+	.then(data => {
+		// Update the content of the HTML page with the new note
+		note=data
+		document.getElementById("note-title").innerText = data.title;
+		document.getElementById("note-body").innerText = data.body;
+		currentNoteId = data.note_id;
+	})
+	.catch(error => {
+		console.error("Error fetching next note:", error);
+	});
 
 	// Function to display the current note
 	function displayNote() {
-		var note = notes[currentNoteIndex];
+		currentNoteId=note.note_id;
 		document.getElementById("note-title").innerHTML = note.title;
 		document.getElementById("note-body").innerHTML = note.body;
 	}
 
+	// Display the initial note
+	displayNote();
+
 	// Function to navigate to the previous note
 	function previousNote() {
-		if (currentNoteIndex > 0) {
-			currentNoteIndex--;
-			displayNote();
-		}
-		else {
-			currentNoteIndex = notes.length -1;
-			displayNote();
-		}
+		// Send a request to the server to get the next note
+		fetch("/get_previous_note?id="+currentNoteId)
+			.then(response => response.json())
+			.then(data => {
+				// Update the content of the HTML page with the new note
+				currentNoteId = data.note_id;
+				note=data;
+				displayNote();
+			})
+			.catch(error => {
+				console.error("Error fetching previous note:", error);
+			});
+	}
+
+	
+	// Function to navigate to the next note
+	function nextNote() {
+
+		// Send a request to the server to get the next note
+		fetch("/get_next_note?id="+currentNoteId)
+			.then(response => response.json())
+			.then(data => {
+				// Update the content of the HTML page with the new note
+				currentNoteId = data.note_id;
+				note=data;
+				displayNote();
+			})
+			.catch(error => {
+				console.error("Error fetching next note:", error);
+			});
+			
 	}
 
 	// Function to navigate to the next note
-	function nextNote() {
-		if (currentNoteIndex < notes.length -1) {
-			currentNoteIndex++;
-			displayNote();
-		}
-		else {
-			currentNoteIndex = 0;
-			displayNote();
-		}
+	function deleteNote() {
+
+		// Send a request to the server to delete the current not and get the next one
+		fetch("/delete?id="+currentNoteId)
+			.then(response => response.json())
+			.then(data => {
+				// Update the content of the HTML page with the next note
+				currentNoteId = data.note_id;
+				note=data;
+				displayNote();
+			})
+			.catch(error => {
+				console.error("Error fetching next note:", error);
+			});
+			
 	}
 
 	// Add click event listeners to the arrow buttons
 	document.getElementById("previous-note").addEventListener("click", previousNote);
 	document.getElementById("next-note").addEventListener("click", nextNote);
+	document.getElementById("delete-note").addEventListener("click", deleteNote);
 
-	// Display the initial note
-	displayNote();
+	
 </script>
 </html>
