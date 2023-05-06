@@ -22,6 +22,8 @@
 		</div>
 		<h2 style="font-size: 4vw;" id="note-title">Note Title</h2>
 		<div style="font-size: 4vw;white-space: pre-wrap;" id="note-body">Note Body</div>
+
+		<button style="font-size: 2vw;" id="delete-note">DELETE &rarr;</button>
 	</div>
 
 
@@ -91,9 +93,28 @@
 			
 	}
 
+	// Function to navigate to the next note
+	function deleteNote() {
+
+		// Send a request to the server to delete the current not and get the next one
+		fetch("/delete?id="+currentNoteId)
+			.then(response => response.json())
+			.then(data => {
+				// Update the content of the HTML page with the next note
+				currentNoteId = data.note_id;
+				note=data;
+				displayNote();
+			})
+			.catch(error => {
+				console.error("Error fetching next note:", error);
+			});
+			
+	}
+
 	// Add click event listeners to the arrow buttons
 	document.getElementById("previous-note").addEventListener("click", previousNote);
 	document.getElementById("next-note").addEventListener("click", nextNote);
+	document.getElementById("delete-note").addEventListener("click", deleteNote);
 
 	
 </script>
