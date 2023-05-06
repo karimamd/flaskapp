@@ -18,7 +18,7 @@ def show_all():
    # db.create_all()
    conn = get_db_connection()
    cur = conn.cursor()
-   cur.execute('SELECT * FROM note_items order by note_id;')
+   cur.execute('SELECT * FROM note_items_unarchived order by note_id;')
    all_notes = cur.fetchall() # list of tuples
    all_notes_reversed=all_notes.copy()
    all_notes_reversed.reverse()
@@ -31,7 +31,7 @@ def show_all():
 def queue():
    conn = get_db_connection()
    cur = conn.cursor()
-   cur.execute('SELECT * FROM note_items order by note_id asc limit 1;')
+   cur.execute('SELECT * FROM note_items_unarchived order by note_id asc limit 1;')
    all_notes = cur.fetchall() # list of tuples
    # all_notes=[(1,'t1','b1'), (2,'t2','b2')]
    
@@ -74,11 +74,43 @@ def get_next_note():
       print('executed')
    except:
       print ("I cant execute the update query for some reason")
-   get_note_query= "SELECT note_id, title, body FROM note_items where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
+   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
    cur.execute(get_note_query)
    all_notes = cur.fetchall()
    if not all_notes:
-      get_note_query= "SELECT note_id, title, body FROM note_items order by note_id asc limit 1;"
+      get_note_query= "SELECT note_id, title, body FROM note_items_unarchived order by note_id asc limit 1;"
+      cur.execute(get_note_query)
+      all_notes = cur.fetchall()  
+   next_note = all_notes[0]
+
+   # Return the next note as JSON
+   return jsonify({
+      "note_id": next_note[0],
+      "title": next_note[1],
+      "body": next_note[2]
+   })
+   
+   
+@app.route("/delete")
+def archive_note():
+    # Get the next note from the database
+   current_note_id = request.args.get('id')
+   # print(current_note_id)
+   conn = get_db_connection()
+   cur = conn.cursor()
+   archive_query="update note_items set is_archived = true where note_id = "+str(current_note_id)
+   try:
+      cur2 = conn.cursor()
+      cur2.execute(archive_query)
+      conn.commit()
+      print('executed')
+   except:
+      print ("I cant execute the update query for some reason")
+   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
+   cur.execute(get_note_query)
+   all_notes = cur.fetchall()
+   if not all_notes:
+      get_note_query= "SELECT note_id, title, body FROM note_items_unarchived order by note_id asc limit 1;"
       cur.execute(get_note_query)
       all_notes = cur.fetchall()  
    next_note = all_notes[0]
@@ -104,12 +136,12 @@ def get_previous_note():
       print('executed')
    except:
       print ("I cant execute the update query for some reason")
-   get_note_query= "SELECT note_id, title, body FROM note_items where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
+   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
    cur.execute(get_note_query)
    all_notes = cur.fetchall()
    # if no note before it then get the last note in the database (end of queue)
    if not all_notes:
-      get_note_query= "SELECT note_id, title, body FROM note_items order by note_id desc limit 1;"
+      get_note_query= "SELECT note_id, title, body FROM note_items_unarchived order by note_id desc limit 1;"
       cur.execute(get_note_query)
       all_notes = cur.fetchall()
    next_note = all_notes[0]
@@ -126,7 +158,7 @@ def get_current_note():
     # Get the next note from the database
    conn = get_db_connection()
    cur = conn.cursor()
-   query= "SELECT note_id, title, body FROM note_items where last_read_at  = (select max(last_read_at) from note_items ni);"
+   query= "SELECT note_id, title, body FROM note_items_unarchived where last_read_at  = (select max(last_read_at) from note_items_unarchived ni);"
    cur.execute(query)
    all_notes = cur.fetchall()
    # print(all_notes)
