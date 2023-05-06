@@ -48,7 +48,7 @@ def new():
          flash('Please enter all the fields', 'error')
       else:
          note_title=request.form['title']
-         note_body=request.form['body']
+         note_body=request.form['body'].replace("'", "`")
          conn = get_db_connection()
          cur = conn.cursor()
          cur.execute("insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body))
