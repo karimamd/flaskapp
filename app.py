@@ -35,7 +35,7 @@ def queue():
 
 @app.route('/all')
 def show_all():
-   select_all = 'SELECT * FROM note_items_unarchived order by note_id;'
+   select_all = 'SELECT note_id, title, body, date_added, last_read_at::date as last_read_date FROM note_items_unarchived order by note_id;'
    all_notes = query_db(select_all, True) # list of tuples
    all_notes_reversed=all_notes.copy()
    all_notes_reversed.reverse()
@@ -93,7 +93,7 @@ def edit(note_id):
             # print('executed')
          except:
             print ("I cant execute the update query for some reason")
-         return redirect(url_for('show_all'))
+         return redirect(url_for('queue'))
    return render_template('edit.html')
 
       
