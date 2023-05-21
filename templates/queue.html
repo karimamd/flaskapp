@@ -25,6 +25,10 @@
 
 		<button style="font-size: 2vw;" id="delete-note">DELETE &rarr;</button>
 		<button style="font-size: 2vw;" id="edit-note">EDIT &rarr;</button>
+
+		<br>
+		<br>
+		<div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto" id="note-metadata">(note metadata)</div>
 	</div>
 
 
@@ -43,6 +47,7 @@
 		note=data
 		document.getElementById("note-title").innerText = data.title;
 		document.getElementById("note-body").innerText = data.body;
+		document.getElementById("note-metadata").innerText = '( created_at: ' + data.created_at + '  ----  last_read_at: ' + data.read_at +' )';
 		currentNoteId = data.note_id;
 	})
 	.catch(error => {
@@ -54,6 +59,7 @@
 		currentNoteId=note.note_id;
 		document.getElementById("note-title").innerHTML = note.title;
 		document.getElementById("note-body").innerHTML = note.body;
+		document.getElementById("note-metadata").innerText = '( created_at: ' + data.created_at + '  ----  last_read_at: ' + data.read_at +' )';
 
 		fetch("/update_last_read?id="+currentNoteId)
 		.then(response => response.json())

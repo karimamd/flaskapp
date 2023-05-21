@@ -17,9 +17,11 @@
 		
 
             {% for note in notes %}
-      
             <h2 dir="auto">{{ note[1] }}</h2>
             <div style="white-space: pre-wrap;" dir="auto">{{ note[2] }}</div>
+            <br>
+            <br>
+            <div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto">( created_at: {{ note[3] }}    ------    last_read: {{ note[4] }})</div>
             <hr/>
                
             {% endfor %}
