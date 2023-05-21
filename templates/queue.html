@@ -34,7 +34,7 @@
 
 	var currentNoteId = 25; // dummy value for the global variable
 
-	// Send a request to the server to get the first note (to be changed to last read note)
+	// Send a request to the server to get the last read note
 	fetch("/get_current_note")
 	.then(response => response.json())
 	.then(data => {

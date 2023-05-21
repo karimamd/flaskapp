@@ -24,11 +24,30 @@
       
       <form action = "{{ request.path }}" method = "post">
          <label for = "title">Title</label><br>
-         <input type = "text"   dir="auto" name = "title" placeholder = "title" /><br>
+         <input id="title_field" type = "text"   dir="auto" name = "title" placeholder = "title" value="kareem"/><br>
 
          <label for = "body">body</label><br>
-         <textarea name = "body" placeholder = "body" dir="auto"></textarea><br>
+         <textarea id= "body_field" name = "body" placeholder = "body" dir="auto"></textarea><br>
          <input type = "submit" value = "Submit" />
       </form>
    </body>
+   <script>
+      var currentNoteId = 25; // dummy value for the global variable
+
+      // Send a request to the server to get the last read note
+      fetch("/get_current_note")
+      .then(response => response.json())
+      .then(data => {
+         // Update the content of the HTML page with the new note
+         note=data
+         document.getElementById("title_field").value = data.title;
+         document.getElementById("body_field").value = data.body;
+         currentNoteId = data.note_id;
+      })
+      .catch(error => {
+         console.error("Error fetching next note:", error);
+      });
+
+   </script>
+
 </html>

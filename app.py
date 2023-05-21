@@ -32,7 +32,7 @@ def queue():
    last_read_notes = query_db(select_last_read, True) # list of tuples
    # all_notes=[(1,'t1','b1'), (2,'t2','b2')] 
    note_one = last_read_notes[0]
-   return render_template('queue.html', note = jsonify({"note_id": note_one[0],"title": note_one[1],"body": note_one[2]} ))
+   return render_template('queue.html')
 
 @app.route('/all')
 def show_all():
@@ -65,18 +65,23 @@ def edit():
    # 2 get note with id
    # 3 post note with id title and body to text area
    # 4 
-   current_note_id = request.args.get('id')
-   if request.method == 'POST':
-      if not request.form['title'] or not request.form['body']:
-         flash('Please enter all the fields', 'error')
-      else:
-         note_title=request.form['title']
-         note_body=request.form['body'].replace("'", "`")
+   # current_note_id = request.args.get('id')
+   return render_template('edit.html', backend_note = jsonify({"note_id": 30,"title": "mock title","body": "mock body"} ))
+   # current_note_id=30
+   # if request.method == 'POST':
+   #    if not request.form['title'] or not request.form['body']:
+   #       flash('Please enter all the fields', 'error')
+   #    else:
+   #       note_title=request.form['title']
+   #       note_body=request.form['body'].replace("'", "`")
 
-         insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
-         query_db(insert_query, is_fetchable=False, needs_commit=False)
-         flash('Record was successfully added')
-         return redirect(url_for('show_all'))
+   #       insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
+   #       query_db(insert_query, is_fetchable=False, needs_commit=False)
+   #       flash('Record was successfully added')
+   #       return redirect(url_for('show_all'))
+   # else:
+      
+
 
 @app.route("/get_next_note")
 def get_next_note():
