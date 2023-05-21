@@ -5,7 +5,6 @@ import unicodedata
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "karimamd95"
 
-
 def remove_control_characters(s):
     return "".join(ch for ch in s if unicodedata.category(ch)[0]!="C")
 
@@ -32,7 +31,7 @@ def queue():
    last_read_notes = query_db(select_last_read, True) # list of tuples
    # all_notes=[(1,'t1','b1'), (2,'t2','b2')] 
    note_one = last_read_notes[0]
-   return render_template('queue.html', note = jsonify({"note_id": note_one[0],"title": note_one[1],"body": note_one[2]} ))
+   return render_template('queue.html')
 
 @app.route('/all')
 def show_all():
@@ -57,6 +56,47 @@ def new():
          flash('Record was successfully added')
          return redirect(url_for('show_all'))
    return render_template('new.html')
+
+@app.route("/get_note_by_id")
+def get_note_by_id():
+   current_note_id = request.args.get('id')
+   # print('current note id:')
+   # print(current_note_id)
+   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER = {id} limit 1;".format(id=current_note_id)
+   all_notes = query_db(get_note_query, True)
+   if not all_notes:
+      get_note_query= "SELECT 0 as note_id, 'none found' as title, 'none found' as body FROM note_items_unarchived order by note_id asc limit 1;"
+      all_notes = query_db(get_note_query, True)
+   backend_note = all_notes[0]
+   # Return the note as JSON
+   return jsonify({
+      "note_id": backend_note[0],
+      "title": backend_note[1],
+      "body": backend_note[2]
+   })
+   
+@app.route('/edit/<int:note_id>', methods = ['GET', 'POST'])
+def edit(note_id):
+   # next: want to send parameter to edit page of which id to show
+
+   if request.method == 'POST':
+      if not request.form['title'] or not request.form['body']:
+         flash('Please enter all the fields', 'error')
+      else:
+         note_title=request.form['title']
+         note_body=request.form['body'].replace("'", "`")
+
+         update_query="update note_items set title = '{new_title}', body='{new_body}' where note_id = {edited_note_id};".format(new_title=note_title, new_body=note_body, edited_note_id=str(note_id))
+         # print(update_query)
+         try:
+            query_db(update_query, is_fetchable=False, needs_commit=True)
+            print('executed')
+         except:
+            print ("I cant execute the update query for some reason")
+         return redirect(url_for('show_all'))
+   return render_template('edit.html')
+
+      
 
 
 @app.route("/get_next_note")

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    </head>
+   <body>
+      <h3>
+         <a href = "{{ url_for('show_all') }}" >All notes</a>
+         <a href = "{{ url_for('new') }}" >Add Note</a>
+         <a href = "{{ url_for('queue') }}" >Notes queue</a>
+       </h3>
+         
+      <hr/>
+      <h3>Edit notes here</h3>
+      <hr/>
+      
+      {%- for category, message in get_flashed_messages(with_categories = true) %}
+         <div class = "alert alert-danger">
+            {{ message }}
+         </div>
+      {%- endfor %}
+      
+      <form action = "{{ request.path }}" method = "post">
+         <label for = "title">Title</label><br>
+         <input id="title_field" type = "text"   dir="auto" name = "title" placeholder = "title" /><br>
+
+         <label for = "body">body</label><br>
+         <textarea id= "body_field" name = "body" placeholder = "body" dir="auto"></textarea><br>
+         <input type = "submit" value = "Submit" />
+      </form>
+   </body>
+   <script>
+      var currentNoteId = 31; // dummy value for the global variable
+      const queryString = window.location.search;
+      console.log(queryString);
+      const urlParams = new URLSearchParams(queryString);
+      const edited_note_id = urlParams.get('enote_id')
+      
+      if (urlParams.has('enote_id') == true){
+         currentNoteId=edited_note_id;
+      }
+      else {
+         console.log('id parameter not found error')
+      }
+
+      // Send a request to the server to get the last read note
+      fetch("/get_note_by_id?id="+currentNoteId)
+      .then(response => response.json())
+      .then(data => {
+         // Update the content of the HTML page with the new note
+         note=data
+         document.getElementById("title_field").value = data.title;
+         document.getElementById("body_field").value = data.body;
+         currentNoteId = data.note_id;
+      })
+      .catch(error => {
+         console.error("Error fetching note by id:", error);
+      });
+
+   </script>
+
+</html>
