@@ -93,6 +93,7 @@ def edit(note_id):
             # print('executed')
          except:
             print ("I cant execute the update query for some reason")
+            # todo: investigate why exception is called even when the query succeeds
          return redirect(url_for('queue'))
    return render_template('edit.html')
 
@@ -111,11 +112,11 @@ def get_next_note():
    except:
       print ("I cant execute the update query for some reason")
       
-   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
-   
+   get_note_query= "SELECT note_id, title, body, date_added::text, last_read_at::date::text as last_read_date FROM note_items_unarchived where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
+   print('next note here')
    all_notes = query_db(get_note_query, is_fetchable=True)
    if not all_notes:
-      get_note_query= "SELECT note_id, title, body FROM note_items_unarchived order by note_id asc limit 1;"
+      get_note_query= "SELECT note_id, title, body, date_added::text, last_read_at::date::text as last_read_date FROM note_items_unarchived order by note_id asc limit 1;"
       all_notes = all_notes = query_db(get_note_query, is_fetchable=True)
    next_note = all_notes[0]
 
@@ -123,7 +124,9 @@ def get_next_note():
    return jsonify({
       "note_id": next_note[0],
       "title": next_note[1],
-      "body": next_note[2]
+      "body": next_note[2],
+      "created_at": next_note[3],
+      "read_at": next_note[4]
    })
 
 @app.route("/update_last_read")
@@ -174,11 +177,11 @@ def get_previous_note():
       # print('executed')
    except:
       print ("I cant execute the update query for some reason")
-   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
+   get_note_query= "SELECT note_id, title, body, date_added::text, last_read_at::date::text as last_read_date FROM note_items_unarchived where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
    all_notes = query_db(get_note_query, is_fetchable=True)
    # if no note before it then get the last note in the database (end of queue)
    if not all_notes:
-      get_note_query= "SELECT note_id, title, body FROM note_items_unarchived order by note_id desc limit 1;"
+      get_note_query= "SELECT note_id, title, body, date_added::text, last_read_at::date::text as last_read_date FROM note_items_unarchived order by note_id desc limit 1;"
       all_notes = query_db(get_note_query, is_fetchable=True)
    next_note = all_notes[0]
 
@@ -186,13 +189,15 @@ def get_previous_note():
    return jsonify({
       "note_id": next_note[0],
       "title": next_note[1],
-      "body": next_note[2]
+      "body": next_note[2],
+      "created_at": next_note[3],
+      "read_at": next_note[4]
    })
    
 @app.route("/get_current_note")
 def get_current_note():
     # Get the next note from the database
-   query= "SELECT note_id, title, body FROM note_items_unarchived where last_read_at  = (select max(last_read_at) from note_items_unarchived ni);"
+   query= "SELECT note_id, title, body, date_added::text, last_read_at::date::text as last_read_date  FROM note_items_unarchived where last_read_at  = (select max(last_read_at) from note_items_unarchived ni);"
    all_notes = query_db(query, is_fetchable=True, needs_commit=False)
    # print(all_notes)
    next_note = all_notes[0]
@@ -201,7 +206,9 @@ def get_current_note():
    return jsonify({
       "note_id": next_note[0],
       "title": next_note[1],
-      "body": next_note[2]
+      "body": next_note[2],
+      "created_at": next_note[3],
+      "read_at": next_note[4]
    })
 
 if __name__ == '__main__':
