@@ -5,7 +5,6 @@ import unicodedata
 app = Flask(__name__)
 app.config['SECRET_KEY'] = "karimamd95"
 
-
 def remove_control_characters(s):
     return "".join(ch for ch in s if unicodedata.category(ch)[0]!="C")
 
@@ -61,8 +60,8 @@ def new():
 @app.route("/get_note_by_id")
 def get_note_by_id():
    current_note_id = request.args.get('id')
-   print('current note id:')
-   print(current_note_id)
+   # print('current note id:')
+   # print(current_note_id)
    get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER = {id} limit 1;".format(id=current_note_id)
    all_notes = query_db(get_note_query, True)
    if not all_notes:
@@ -76,10 +75,10 @@ def get_note_by_id():
       "body": backend_note[2]
    })
    
-@app.route('/edit', methods = ['GET', 'POST'])
-def edit():
+@app.route('/edit/<int:note_id>', methods = ['GET', 'POST'])
+def edit(note_id):
    # next: want to send parameter to edit page of which id to show
-   # current_note_id = request.args.get('id')
+
    if request.method == 'POST':
       if not request.form['title'] or not request.form['body']:
          flash('Please enter all the fields', 'error')
@@ -87,9 +86,13 @@ def edit():
          note_title=request.form['title']
          note_body=request.form['body'].replace("'", "`")
 
-         insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
-         query_db(insert_query, is_fetchable=False, needs_commit=False)
-         flash('Record was successfully added')
+         update_query="update note_items set title = '{new_title}', body='{new_body}' where note_id = {edited_note_id};".format(new_title=note_title, new_body=note_body, edited_note_id=str(note_id))
+         # print(update_query)
+         try:
+            query_db(update_query, is_fetchable=False, needs_commit=True)
+            print('executed')
+         except:
+            print ("I cant execute the update query for some reason")
          return redirect(url_for('show_all'))
    return render_template('edit.html')
 

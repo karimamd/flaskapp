@@ -117,7 +117,8 @@
 	document.getElementById("next-note").addEventListener("click", nextNote);
 	document.getElementById("delete-note").addEventListener("click", deleteNote);
 	document.getElementById("edit-note").onclick = function () {
-        location.href = "{{ url_for('edit') }}?enote_id="+currentNoteId;
+		var link="{{ url_for('edit', note_id=111) }}".split('/edit')[0];
+        location.href = link+'/edit/'+currentNoteId+"?enote_id="+currentNoteId;
     };
 
 	
