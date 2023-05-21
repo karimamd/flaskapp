@@ -58,6 +58,24 @@ def new():
          return redirect(url_for('show_all'))
    return render_template('new.html')
 
+@app.route("/get_note_by_id")
+def get_note_by_id():
+   current_note_id = request.args.get('id')
+   print('current note id:')
+   print(current_note_id)
+   get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER = {id} limit 1;".format(id=current_note_id)
+   all_notes = query_db(get_note_query, True)
+   if not all_notes:
+      get_note_query= "SELECT 0 as note_id, 'none found' as title, 'none found' as body FROM note_items_unarchived order by note_id asc limit 1;"
+      all_notes = query_db(get_note_query, True)
+   backend_note = all_notes[0]
+   # Return the note as JSON
+   return jsonify({
+      "note_id": backend_note[0],
+      "title": backend_note[1],
+      "body": backend_note[2]
+   })
+   
 @app.route('/edit', methods = ['GET', 'POST'])
 def edit():
    # when open edit page

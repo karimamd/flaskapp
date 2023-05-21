@@ -32,10 +32,10 @@
       </form>
    </body>
    <script>
-      var currentNoteId = 25; // dummy value for the global variable
+      var currentNoteId = 31; // dummy value for the global variable
 
       // Send a request to the server to get the last read note
-      fetch("/get_current_note")
+      fetch("/get_note_by_id?id="+currentNoteId)
       .then(response => response.json())
       .then(data => {
          // Update the content of the HTML page with the new note
