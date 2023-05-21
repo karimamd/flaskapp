@@ -90,7 +90,7 @@ def edit(note_id):
          # print(update_query)
          try:
             query_db(update_query, is_fetchable=False, needs_commit=True)
-            print('executed')
+            # print('executed')
          except:
             print ("I cant execute the update query for some reason")
          return redirect(url_for('show_all'))
@@ -107,7 +107,7 @@ def get_next_note():
    update_query="update note_items set last_read_at = current_timestamp where note_id = "+str(current_note_id)
    try:
       query_db(update_query, is_fetchable=False, needs_commit=True)
-      print('executed')
+      # print('executed')
    except:
       print ("I cant execute the update query for some reason")
       
@@ -125,8 +125,20 @@ def get_next_note():
       "title": next_note[1],
       "body": next_note[2]
    })
-   
-   
+
+@app.route("/update_last_read")
+def update_last_read():
+   current_note_id = request.args.get('id')
+   update_query="update note_items set last_read_at = current_timestamp where note_id = "+str(current_note_id)
+   try:
+      query_db(update_query, is_fetchable=False, needs_commit=True)
+      # print('executed last read update')
+   except:
+      print ("I cant execute the update query for some reason")
+   return jsonify({
+      "dummy": "dummy"
+   })
+          
 @app.route("/delete")
 def archive_note():
     # Get the next note from the database
@@ -135,7 +147,7 @@ def archive_note():
    archive_query="update note_items set is_archived = true where note_id = "+str(current_note_id)
    try:
       query_db(archive_query, is_fetchable=False, needs_commit=True)
-      print('executed')
+      # print('executed')
    except:
       print ("I cant execute the update query for some reason")
    get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER > {id} order by note_id limit 1;".format(id=current_note_id)
@@ -159,7 +171,7 @@ def get_previous_note():
    update_query="update note_items set last_read_at = current_timestamp where note_id = "+str(current_note_id)
    try:
       query_db(update_query, False, needs_commit=True)
-      print('executed')
+      # print('executed')
    except:
       print ("I cant execute the update query for some reason")
    get_note_query= "SELECT note_id, title, body FROM note_items_unarchived where note_id::INTEGER < {id} order by note_id desc limit 1;".format(id=current_note_id)
