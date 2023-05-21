@@ -59,7 +59,7 @@
 		currentNoteId=note.note_id;
 		document.getElementById("note-title").innerHTML = note.title;
 		document.getElementById("note-body").innerHTML = note.body;
-		document.getElementById("note-metadata").innerText = '( created_at: ' + data.created_at + '  ----  last_read_at: ' + data.read_at +' )';
+		document.getElementById("note-metadata").innerText = '( created_at: ' + note.created_at + '  ----  last_read_at: ' + note.read_at +' )';
 
 		fetch("/update_last_read?id="+currentNoteId)
 		.then(response => response.json())
