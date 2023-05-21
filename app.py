@@ -84,20 +84,19 @@ def edit():
    # 3 post note with id title and body to text area
    # 4 
    # current_note_id = request.args.get('id')
-   return render_template('edit.html', backend_note = jsonify({"note_id": 30,"title": "mock title","body": "mock body"} ))
-   # current_note_id=30
-   # if request.method == 'POST':
-   #    if not request.form['title'] or not request.form['body']:
-   #       flash('Please enter all the fields', 'error')
-   #    else:
-   #       note_title=request.form['title']
-   #       note_body=request.form['body'].replace("'", "`")
+   if request.method == 'POST':
+      if not request.form['title'] or not request.form['body']:
+         flash('Please enter all the fields', 'error')
+      else:
+         note_title=request.form['title']
+         note_body=request.form['body'].replace("'", "`")
 
-   #       insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
-   #       query_db(insert_query, is_fetchable=False, needs_commit=False)
-   #       flash('Record was successfully added')
-   #       return redirect(url_for('show_all'))
-   # else:
+         insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
+         query_db(insert_query, is_fetchable=False, needs_commit=False)
+         flash('Record was successfully added')
+         return redirect(url_for('show_all'))
+   return render_template('edit.html')
+
       
 
 
