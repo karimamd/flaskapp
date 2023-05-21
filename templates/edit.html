@@ -33,6 +33,17 @@
    </body>
    <script>
       var currentNoteId = 31; // dummy value for the global variable
+      const queryString = window.location.search;
+      console.log(queryString);
+      const urlParams = new URLSearchParams(queryString);
+      const edited_note_id = urlParams.get('enote_id')
+      
+      if (urlParams.has('enote_id') == true){
+         currentNoteId=edited_note_id;
+      }
+      else {
+         console.log('id parameter not found error')
+      }
 
       // Send a request to the server to get the last read note
       fetch("/get_note_by_id?id="+currentNoteId)

@@ -78,11 +78,7 @@ def get_note_by_id():
    
 @app.route('/edit', methods = ['GET', 'POST'])
 def edit():
-   # when open edit page
-   # 1 get id
-   # 2 get note with id
-   # 3 post note with id title and body to text area
-   # 4 
+   # next: want to send parameter to edit page of which id to show
    # current_note_id = request.args.get('id')
    if request.method == 'POST':
       if not request.form['title'] or not request.form['body']:
