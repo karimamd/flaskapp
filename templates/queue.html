@@ -54,6 +54,12 @@
 		currentNoteId=note.note_id;
 		document.getElementById("note-title").innerHTML = note.title;
 		document.getElementById("note-body").innerHTML = note.body;
+
+		fetch("/update_last_read?id="+currentNoteId)
+		.then(response => response.json())
+		.catch(error => {
+			console.error("Error saving this note as last read:", error);
+		});
 	}
 
 	// Display the initial note
