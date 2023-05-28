@@ -25,13 +25,25 @@ def query_db(query, is_fetchable=False, needs_commit=False):
    conn.close()
    return all_records
    
-@app.route('/')
+@app.route('/', methods = ['GET', 'POST'])
 def queue():
-   select_last_read = 'SELECT * FROM note_items_unarchived order by last_read_at desc limit 1;'
-   last_read_notes = query_db(select_last_read, True) # list of tuples
-   # all_notes=[(1,'t1','b1'), (2,'t2','b2')] 
-   note_one = last_read_notes[0]
-   return render_template('queue.html')
+   if request.method == 'POST':
+         if not request.form['title'] or not request.form['body']:
+            flash('Please enter all the fields', 'error')
+         else:
+            note_title=request.form['title']
+            note_body=request.form['body'].replace("'", "`")
+
+            insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
+            query_db(insert_query, is_fetchable=False, needs_commit=False)
+            flash('Record was successfully added')
+            return redirect(url_for('show_all'))
+   else: # get method
+      select_last_read = 'SELECT * FROM note_items_unarchived order by last_read_at desc limit 1;'
+      last_read_notes = query_db(select_last_read, True) # list of tuples
+      # all_notes=[(1,'t1','b1'), (2,'t2','b2')] 
+      note_one = last_read_notes[0]
+      return render_template('queue.html')
 
 @app.route('/all')
 def show_all():
