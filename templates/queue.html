@@ -31,8 +31,17 @@
 		<div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto" id="note-metadata">(note metadata)</div>
 	</div>
 
+	<hr/>
+	<hr/>
+	
+	<form action = "{{ request.path }}" method = "post">
+		<label for = "title">Title</label><br>
+		<input type = "text"   dir="auto" name = "title" placeholder = "title" /><br>
 
-
+		<label for = "body">body</label><br>
+		<textarea name = "body" placeholder = "body" dir="auto"></textarea><br>
+		<input type = "submit" value = "Submit" />
+	 </form>
 </body>
 
 <script>
