@@ -1,16 +1,6 @@
-<!DOCTYPE html>
-<html lang = "en">
-   <head>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
-   <body>
-      <h3>
-         <a href = "{{ url_for('show_all') }}" style="font-size: 4vw;">All notes</a>
-         <a href = "{{ url_for('new') }}" style="font-size: 4vw;">Add Note</a>
-         <a href = "{{ url_for('queue') }}" style="font-size: 4vw;">Notes queue</a>
-       </h3>
-         
-      <hr/>
+{% extends 'base.html' %}
+
+{% block content %}
       {%- for message in get_flashed_messages() %}
          {{ message }}
       {%- endfor %}
@@ -26,5 +16,4 @@
                
             {% endfor %}
 
-   </body>
-</html>
+            {% endblock %}

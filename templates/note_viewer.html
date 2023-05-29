@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="note">
+    <h2 style="font-size: 4vw;" id="note-title" dir="auto">Note Title</h2>
+    <div style="font-size: 4vw;white-space: pre-wrap;" id="note-body"  dir="auto">Note Body</div>
+
+    <button style="font-size: 2vw;" id="delete-note">DELETE &rarr;</button>
+    <button style="font-size: 2vw;" id="edit-note">EDIT &rarr;</button>
+
+    <br>
+    <br>
+    <div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto" id="note-metadata">(note metadata)</div>
+</div>
+{% endblock %}
