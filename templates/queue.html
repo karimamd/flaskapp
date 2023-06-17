@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Note Taking App</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-</head>
+{% extends 'base.html' %}
 
-	
-<body>
-	<h3>
-		<a href = "{{ url_for('show_all') }}" style="font-size: 4vw;">All notes</a>
-		<a href = "{{ url_for('new') }}" style="font-size: 4vw;">Add Note</a>
-		<a href = "{{ url_for('queue') }}" style="font-size: 4vw;">Notes queue</a>
-	 </h3>
-		
-	 <hr/>
+{% block content %}
 
 	<div id="note">
 		<div id="navigation">
@@ -34,15 +21,8 @@
 	<hr/>
 	<hr/>
 	
-	<form action = "{{ request.path }}" method = "post">
-		<label for = "title">Title</label><br>
-		<input type = "text"   dir="auto" name = "title" placeholder = "title" /><br>
+	{% include 'new_note_form.html' %}
 
-		<label for = "body">body</label><br>
-		<textarea name = "body" placeholder = "body" dir="auto"></textarea><br>
-		<input type = "submit" value = "Submit" />
-	 </form>
-</body>
 
 <script>
 
@@ -144,4 +124,4 @@
 
 	
 </script>
-</html>
+{% endblock %}

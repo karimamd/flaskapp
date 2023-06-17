@@ -37,7 +37,7 @@ def queue():
             insert_query = "insert into note_items(title,body) values('{title}', '{body}'); commit;".format(title=note_title, body=note_body)
             query_db(insert_query, is_fetchable=False, needs_commit=False)
             flash('Record was successfully added')
-            return redirect(url_for('show_all'))
+            return redirect(url_for('queue'))
    else: # get method
       select_last_read = 'SELECT * FROM note_items_unarchived order by last_read_at desc limit 1;'
       last_read_notes = query_db(select_last_read, True) # list of tuples
@@ -226,6 +226,10 @@ def get_current_note():
       "created_at": next_note[3],
       "read_at": next_note[4]
    })
+
+@app.route("/note_viewer")
+def note_viewer():
+   return render_template('note_viewer.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
