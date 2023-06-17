@@ -35,10 +35,10 @@
       const queryString = window.location.search;
       console.log(queryString);
       const urlParams = new URLSearchParams(queryString);
-      const edited_note_id = urlParams.get('enote_id')
+      const note_id_param = urlParams.get('enote_id')
       
       if (urlParams.has('enote_id') == true){
-         currentNoteId=edited_note_id;
+         currentNoteId=note_id_param;
       }
       else {
          console.log('id parameter not found error')
