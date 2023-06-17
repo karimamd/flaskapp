@@ -2,7 +2,7 @@
 
 {% block content %}
 <div id="note">
-    <h2 style="font-size: 4vw;" id="note-title" dir="auto">Note Title</h2>
+    <h2 style="font-size: 4vw;" id="note-title" dir="auto">{{note_id}}</h2>
     <div style="font-size: 4vw;white-space: pre-wrap;" id="note-body"  dir="auto">Note Body</div>
 
     <button style="font-size: 2vw;" id="delete-note">DELETE &rarr;</button>
@@ -12,4 +12,23 @@
     <br>
     <div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto" id="note-metadata">(note metadata)</div>
 </div>
+<script>
+    var currentNoteId = document.getElementById("note-title").innerText; // get id which is set temporarily in note-title using jinja
+    const queryString = window.location.search;
+
+    // Send a request to the server to get the last read note
+    fetch("/get_note_by_id?id="+currentNoteId)
+    .then(response => response.json())
+    .then(data => {
+       // Update the content of the HTML page with the new note
+       note=data
+       document.getElementById("note-title").innerText = data.title;
+	    document.getElementById("note-body").innerText = data.body;
+       currentNoteId = data.note_id;
+    })
+    .catch(error => {
+       console.error("Error fetching note by id:", error);
+    });
+
+ </script>
 {% endblock %}

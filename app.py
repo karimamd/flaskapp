@@ -227,9 +227,9 @@ def get_current_note():
       "read_at": next_note[4]
    })
 
-@app.route("/note_viewer")
-def note_viewer():
-   return render_template('note_viewer.html')
+@app.route('/note_viewer/<int:note_id>', methods = ['GET', 'POST'])
+def note_viewer(note_id):
+   return render_template('note_viewer.html', note_id=note_id)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
