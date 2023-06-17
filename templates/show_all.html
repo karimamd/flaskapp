@@ -7,7 +7,7 @@
 		
 
             {% for note in notes %}
-            <h2 dir="auto">{{ note[1] }}</h2>
+            <h2 dir="auto"><a href="/note_viewer/{{ note[0] }}">{{ note[1] }}</a></h2>
             <div style="white-space: pre-wrap;" dir="auto">{{ note[2] }}</div>
             <br>
             <br>
