@@ -1,8 +1,20 @@
 <form action = "{{ request.path }}" method = "post">
     <label for = "title">Title</label><br>
-    <input type = "text"   dir="auto" name = "title" placeholder = "title" /><br>
+    <input type = "text"   dir="auto" name = "title" size="50" placeholder = "title" /><br>
 
     <label for = "body">body</label><br>
-    <textarea name = "body" placeholder = "body" dir="auto"></textarea><br>
+    <textarea name = "body" placeholder = "body" dir="auto" cols="50"></textarea><br>
     <input type = "submit" value = "Submit" />
+    <script>
+        const tx = document.getElementsByTagName("textarea");
+        for (let i = 0; i < tx.length; i++) {
+        tx[i].setAttribute("style", "height:" + (tx[i].scrollHeight) + "px;overflow-y:hidden;");
+        tx[i].addEventListener("input", OnInput, false);
+        }
+
+        function OnInput() {
+        this.style.height = 0;
+        this.style.height = (this.scrollHeight) + "px";
+        }
+    </script>
  </form>
