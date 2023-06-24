@@ -21,14 +21,7 @@
          </div>
       {%- endfor %}
       
-      <form action = "{{ request.path }}" method = "post">
-         <label for = "title">Title</label><br>
-         <input id="title_field" type = "text"   dir="auto" name = "title" placeholder = "title" /><br>
-
-         <label for = "body">body</label><br>
-         <textarea id= "body_field" name = "body" placeholder = "body" dir="auto"></textarea><br>
-         <input type = "submit" value = "Submit" />
-      </form>
+      {% include 'new_note_form.html' %}
    </body>
    <script>
       var currentNoteId = 31; // dummy value for the global variable
