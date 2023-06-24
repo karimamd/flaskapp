@@ -5,7 +5,7 @@ import unicodedata
 ###  Configs
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = "karimamd95"\
+app.config['SECRET_KEY'] = "karimamd95"
 
 ### Repeatedly used functions
 
