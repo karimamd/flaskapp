@@ -80,7 +80,7 @@ SELECT note_items.note_id,
 * Python Environment installation
 
 ## New Features and Bug Fixes
-* 
+* [Personal Notion docs](https://www.notion.so/Features-Queue-f484611528d04f72810e7afda305ac5e)
 
 ## Development:
 
