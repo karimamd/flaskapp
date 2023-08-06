@@ -73,11 +73,39 @@ SELECT note_items.note_id,
   	NOT note_items.is_archived
  )
  ;
+
+-- backfills were done for this table
+CREATE TABLE public.note_events (
+	event_name text null,
+	note_id int4 NULL,
+	event_at timestamptz null default current_timestamp
+);
+
+create view note_events_counts as (
+select 
+	event_at::date as event_date
+	, count(distinct case when event_name='edit' then note_id else null end) as edit_count
+	, count(distinct case when event_name='read' then note_id else null end) as read_count
+	, count(distinct case when event_name='create' then note_id else null end) as create_count
+	, count(distinct case when event_name='archive' then note_id else null end) as archive_count
+from
+	PUBLIC.note_events
+group by 1
+)
+;
+
 ```
 
 
 ## How to run the code:
-* Python Environment installation
+* Python Environment installation then run
+
+```
+source flaskapp/bin/activate
+python3 app.py
+```
+
+* go to : http://127.0.0.1:5000
 
 ## New Features and Bug Fixes
 * [Personal Notion docs](https://www.notion.so/Features-Queue-f484611528d04f72810e7afda305ac5e)
