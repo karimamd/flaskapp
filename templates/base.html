@@ -9,12 +9,26 @@
          <a href = "{{ url_for('new') }}" style="font-size: 4vw;">Add Note</a>
          <a href = "{{ url_for('queue') }}" style="font-size: 4vw;">Notes queue</a>
        </h3>
-         
+       <div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto" id="notes-analytics">(notes-analytics)</div>
       <hr/>
 
       <main>
         {% block content %}{% endblock %}
       </main>
-
+      <script>
+         fetch("/get_usage_analytics")
+         .then(response => response.json())
+         .then(data => {
+            // Update the content of the HTML page with the new note
+            analytics=data
+            document.getElementById("notes-analytics").innerText = '( total_notes: ' + data.total_notes + '  ----  total_notes: ' + data.total_notes +' )';
+            currentNoteId = data.note_id;
+         })
+      .catch(error => {
+         console.error("error fetching analytics", error);
+      });
+   
+      </script>
     </body>
+    
 </html>
