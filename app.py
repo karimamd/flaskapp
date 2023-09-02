@@ -68,7 +68,22 @@ def get_current_note():
       "read_at": next_note[4]
    })
 
+@app.route("/get_usage_analytics")
+def get_usage_analytics():
+   total_notes_query= "SELECT count(distinct note_id) as total_notes FROM note_items_unarchived;"
+   counts = query_db(total_notes_query, is_fetchable=True, needs_commit=False)
+   # print(counts)
+   total_notes = counts[0][0]
+   # print(countss)
 
+   read_today_query= "SELECT count(distinct note_id) as total_notes FROM note_items_unarchived where last_read_at::date = current_date;"
+   read_today = query_db(read_today_query, is_fetchable=True, needs_commit=False)
+   read_today = read_today[0][0]
+
+   return jsonify({
+      "total_notes": total_notes,
+      "read_today": read_today
+   })
 
 @app.route("/get_next_note")
 def get_next_note():
