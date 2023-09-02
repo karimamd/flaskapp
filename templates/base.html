@@ -22,7 +22,6 @@
             // Update the content of the HTML page with the new note
             analytics=data
             document.getElementById("notes-analytics").innerText = '( total_notes: ' + data.total_notes + '  ----  read_today: ' + data.read_today +' )';
-            currentNoteId = data.note_id;
          })
       .catch(error => {
          console.error("error fetching analytics", error);
