@@ -1,9 +1,9 @@
 <form action = "{{ request.path }}" method = "post">
     <label for = "title">Title</label><br>
-    <input type = "text"   dir="auto" name = "title" size="50" placeholder = "title" /><br>
+    <input id="title_field" type = "text"   dir="auto" name = "title" size="50" placeholder = "title" /><br>
 
     <label for = "body">body</label><br>
-    <textarea name = "body" placeholder = "body" dir="auto" cols="50"></textarea><br>
+    <textarea id= "body_field" name = "body" placeholder = "body" dir="auto" cols="50"></textarea><br>
     <input type = "submit" value = "Submit" />
     <script>
         const tx = document.getElementsByTagName("textarea");
