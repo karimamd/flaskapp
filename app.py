@@ -70,14 +70,19 @@ def get_current_note():
 
 @app.route("/get_usage_analytics")
 def get_usage_analytics():
-   # query= "SELECT note_id, title, body, created_at::date::text, coalesce(last_read_at::date::text, 'never') as last_read_date  FROM note_items_unarchived where last_read_at  = (select max(last_read_at) from note_items_unarchived ni);"
-   # all_notes = query_db(query, is_fetchable=True, needs_commit=False)
-   # # print(all_notes)
-   # next_note = all_notes[0]
+   total_notes_query= "SELECT count(distinct note_id) as total_notes FROM note_items_unarchived;"
+   counts = query_db(total_notes_query, is_fetchable=True, needs_commit=False)
+   # print(counts)
+   total_notes = counts[0][0]
+   # print(countss)
 
-   # Return the next note as JSON
+   read_today_query= "SELECT count(distinct note_id) as total_notes FROM note_items_unarchived where last_read_at::date = current_date;"
+   read_today = query_db(read_today_query, is_fetchable=True, needs_commit=False)
+   read_today = read_today[0][0]
+
    return jsonify({
-      "total_notes": 10
+      "total_notes": total_notes,
+      "read_today": read_today
    })
 
 @app.route("/get_next_note")
