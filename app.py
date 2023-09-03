@@ -1,6 +1,7 @@
 from flask import Flask, request, flash, url_for, redirect, render_template, jsonify
 import psycopg2
 import unicodedata
+import os
 
 ###  Configs
 
@@ -13,7 +14,10 @@ def remove_control_characters(s):
     return "".join(ch for ch in s if unicodedata.category(ch)[0]!="C")
 
 def get_db_connection():
-   conn = psycopg2.connect(host="note-app.ckkvlyf56ji2.eu-north-1.rds.amazonaws.com", database="postgres", user="karimamd95", password="karimamd95")
+   conn = psycopg2.connect(host=os.environ['KIRITO_DB_URL'], 
+                           database="postgres", 
+                           user=os.environ['KIRITO_DB_USERNAME'], 
+                           password=os.environ['KIRITO_DB_PASSWORD'])
    return conn
 
 def query_db(query, is_fetchable=False, needs_commit=False):

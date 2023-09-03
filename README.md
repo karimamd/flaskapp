@@ -42,6 +42,14 @@ Database: postgres
 
 Username/Password: with Kareem only (create your own RDS if you are not Kareem xD)
 
+These environment variables must be set for the app to work (add them to .zshrc or .bashrc):
+
+```
+export KIRITO_DB_USERNAME=""
+export KIRITO_DB_PASSWORD=""
+export KIRITO_DB_URL=""
+```
+
 
 **DDL to create in the database:**
 
