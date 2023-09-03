@@ -2,8 +2,8 @@
 
 {% block content %}
 <div id="note">
-    <h2 style="font-size: 4vw;" id="note-title" dir="auto">Note Title</h2>
-    <div style="font-size: 4vw;white-space: pre-wrap;" id="note-body"  dir="auto">Note Body</div>
+    <h2 id="note-title" dir="auto" style="font-size: 4vw;">{{note_id}}</h2>
+    <div id="note-body"  dir="auto" style="font-size: 4vw;white-space: pre-wrap;">Note Body</div>
 
     <button style="font-size: 2vw;" id="delete-note">DELETE &rarr;</button>
     <button style="font-size: 2vw;" id="edit-note">EDIT &rarr;</button>
@@ -12,4 +12,47 @@
     <br>
     <div style="white-space: pre-wrap; font-size: 1.2vw;" dir="auto" id="note-metadata">(note metadata)</div>
 </div>
+<script>
+    var currentNoteId = document.getElementById("note-title").innerText; // get id which is set temporarily in note-title using jinja
+    const queryString = window.location.search;
+
+    // Send a request to the server to get the clicked note
+    fetch("/get_note_by_id?id="+currentNoteId)
+    .then(response => response.json())
+    .then(data => {
+       // Update the content of the HTML page with note data
+       note=data
+       document.getElementById("note-title").innerText = data.title;
+	    document.getElementById("note-body").innerText = data.body;
+       currentNoteId = data.note_id;
+    })
+    .catch(error => {
+       console.error("Error fetching note by id:", error);
+    });
+
+
+    // delete note button logic
+    // to modularise later but the other logic fetches next note
+    // todo : make the logic redirect to another page after the delete happens, now it just deletes and remains in the page
+    function deleteNote() {
+
+		// Send a request to the server to delete the current not and get the next one
+		fetch("/delete?id="+currentNoteId)
+			.then(response => response.json())
+			.catch(error => {
+				console.error("Error deleting note:", error);
+			});
+			
+	}
+    document.getElementById("delete-note").addEventListener("click", deleteNote);
+
+    // edit note button login
+    // to modularise later
+    // todo: to remove the 197 and somehow make the call with currentNoteId directly
+    document.getElementById("edit-note").onclick = function () {
+		var link="{{ url_for('edit', note_id=197) }}".split('/edit')[0];
+        location.href = link+'/edit/'+currentNoteId+"?enote_id="+currentNoteId;
+    };
+
+ </script>
 {% endblock %}
