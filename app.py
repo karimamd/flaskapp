@@ -80,9 +80,38 @@ def get_usage_analytics():
    read_today = query_db(read_today_query, is_fetchable=True, needs_commit=False)
    read_today = read_today[0][0]
 
+   days_since_last_open_query= '''
+   select 
+	   current_date- max(last_read_at::date) as days_since_last_open
+   from 
+      public.note_items_unarchived
+   where 
+      last_read_at < current_date ;
+   '''
+   days_lo = query_db(days_since_last_open_query, is_fetchable=True, needs_commit=False)
+   days_since_last_open=days_lo[0][0]
+
+   avg_reads_query= '''
+   SELECT 
+      ceil(avg(notes_cnt)) as avg_read_cnt 
+   FROM 
+      (select 
+         last_read_at::date as reading_date, 
+         count(distinct note_id) as  notes_cnt
+      from 
+         public.note_items_unarchived
+      where
+         last_read_at is not null
+      group by 1) cnts
+      ;
+   '''
+   avg_reads_response= query_db(avg_reads_query, is_fetchable=True, needs_commit=False)
+   avg_reads= avg_reads_response[0][0]
    return jsonify({
       "total_notes": total_notes,
-      "read_today": read_today
+      "read_today": read_today,
+      "days_since_last_open":days_since_last_open,
+      "average_daily_read": avg_reads
    })
 
 @app.route("/get_next_note")
